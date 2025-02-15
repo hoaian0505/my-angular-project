@@ -1,0 +1,109 @@
+<div
+  *ngIf="
+    breeds && breeds.length > 0 && currentIndex < breeds.length;
+    else noBreed
+  "
+  class="w-full h-[80vh]"
+  (swipeleft)="onVote(-1)"
+  (swiperight)="onVote(1)"
+>
+  <button
+    class="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition-colors z-10"
+    (click)="goToLikes()"
+  >
+    My Votes
+  </button>
+  <div
+    class="relative w-fit h-full bg-white shadow-lg rounded-lg overflow-hidden mx-auto my-10"
+  >
+    <ng-container *ngIf="!showDetail; else detailView">
+      <img
+        [src]="breeds[currentIndex].url"
+        alt="Dog Image"
+        class="w-full h-full object-cover"
+        (click)="goToDetails(breeds[currentIndex])"
+        (swipeleft)="onVote(-1)"
+        (swiperight)="onVote(1)"
+      />
+      <div
+        *ngIf="breeds[currentIndex].breeds.length"
+        class="absolute bottom-20 left-0 w-full bg-white bg-opacity-80 px-4 py-2 mb-2"
+      >
+        <h3 class="text-lg font-bold text-gray-800">
+          {{ breeds[currentIndex].breeds[0].name }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ breeds[currentIndex].breeds[0].bred_for }}
+        </p>
+      </div>
+    </ng-container>
+
+    <div class="absolute bottom-4 w-full flex justify-around items-center">
+      <button
+        class="bg-red-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+        (click)="onVote(-1)"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="w-8 h-8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+      <button
+        class="bg-yellow-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-yellow-600 transition-colors"
+        (click)="onVote(2); $event.stopPropagation()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          class="w-8 h-8"
+        >
+          <path
+            d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.177L12 18.897l-7.336 3.85 1.402-8.177L.132 9.21l8.2-1.192L12 .587z"
+          />
+        </svg>
+      </button>
+      <button
+        class="bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-colors"
+        (click)="onVote(1)"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="w-8 h-8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #detailView>
+  <app-detail-page
+    [breedInfo]="breeds[currentIndex]"
+    (voteEvent)="onVote($event)"
+    (closeDetail)="closeDetail()"
+  ></app-detail-page>
+</ng-template>
+
+<ng-template #noBreed>
+  <p class="text-center mt-10 text-xl text-gray-600">No more dogs to show!</p>
+</ng-template>

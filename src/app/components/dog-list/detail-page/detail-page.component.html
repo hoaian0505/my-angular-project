@@ -1,0 +1,71 @@
+<div
+  *ngIf="breedDetails"
+  class="relative max-w-sm w-full mx-auto my-8 p-6 bg-white rounded shadow pb-5"
+>
+  <!-- Nút mũi tên quay về -->
+  <button
+    class="absolute top-0 left-4 mb-2 hover:text-gray-700 p-1 text-gray-400 transition-colors"
+    (click)="onClose()"
+    title="Go back"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+  </button>
+
+  <!-- Tên giống chó -->
+  <div class="mb-4">
+    <p class="font-semibold">Name:</p>
+    <p class="text-gray-700">{{ breedDetails.name || "" }}</p>
+  </div>
+
+  <!-- Bred For -->
+  <div class="mb-4">
+    <p class="font-semibold">Bred For:</p>
+    <p class="text-gray-700">{{ breedDetails.bred_for || "" }}</p>
+  </div>
+
+  <!-- Weight & Height -->
+  <div class="mb-4">
+    <p class="font-semibold">Weight &amp; Height:</p>
+    <p class="text-gray-700">
+      {{ breedDetails.weight.metric || "" }} kg -
+      {{ breedDetails.height.metric || "" }} cm
+    </p>
+  </div>
+
+  <!-- Breed Group -->
+  <div class="mb-4">
+    <p class="font-semibold">Breed Group:</p>
+    <p class="text-gray-700">
+      {{ breedDetails.breed_group || "" }}
+    </p>
+  </div>
+
+  <!-- Temperament -->
+  <div class="mb-4">
+    <p class="font-semibold">Temperament:</p>
+    <p class="text-gray-700">
+      {{ breedDetails.temperament || "" }}
+    </p>
+  </div>
+
+  <!-- Life Span -->
+  <div>
+    <p class="font-semibold">Life Span:</p>
+    <p class="text-gray-700">
+      {{ breedDetails.life_span || "" }}
+    </p>
+  </div>
+</div>
