@@ -1,10 +1,10 @@
 // src/app/components/dog-list/dog-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DogService } from '../services/dog.services';
 import { DogImage } from 'src/app/core/models/dog.model';
 import * as _ from 'lodash';
-import { finalize } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 import { LoadingService } from 'src/app/core/services/loading.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 
@@ -13,13 +13,15 @@ import { LocalStorageService } from 'src/app/core/services/local-storage.service
   templateUrl: './dog-list.component.html',
   styleUrls: ['./dog-list.component.css'],
 })
-export class DogListComponent implements OnInit {
+export class DogListComponent implements OnInit, OnDestroy {
   breeds: DogImage[] = [];
   newBreeds: DogImage[] = [];
   currentPage: number = 0;
   limit: number = 10;
   currentIndex = 0;
   showDetail = false;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private _dogService: DogService,
@@ -36,11 +38,17 @@ export class DogListComponent implements OnInit {
     this.loadBreeds();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadBreeds(): void {
     this._loadingService.setLoading(true);
     this._dogService
       .getRandomBreeds(this.limit)
       .pipe(
+        takeUntil(this.destroy$),
         finalize(() => {
           this._loadingService.setLoading(false);
         })
@@ -63,6 +71,7 @@ export class DogListComponent implements OnInit {
     this._dogService
       .voteBreed(currentImg.id, voteValue)
       .pipe(
+        takeUntil(this.destroy$),
         finalize(() => {
           this._loadingService.setLoading(false);
         })

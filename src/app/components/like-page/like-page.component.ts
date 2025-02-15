@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DogService } from '../services/dog.services';
 import { VoteHistory } from 'src/app/core/models/dog.model';
-import { finalize } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 import { LoadingService } from 'src/app/core/services/loading.service';
 import { Router } from '@angular/router';
 
@@ -10,11 +10,13 @@ import { Router } from '@angular/router';
   templateUrl: './like-page.component.html',
   styleUrls: ['./like-page.component.css'],
 })
-export class LikesPageComponent implements OnInit {
+export class LikesPageComponent implements OnInit, OnDestroy {
   likes: VoteHistory[] = [];
   dislikes: VoteHistory[] = [];
   superLikes: VoteHistory[] = [];
   filter: 'all' | 'likes' | 'dislikes' | 'superLikes' = 'all';
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private _dogService: DogService,
@@ -26,11 +28,17 @@ export class LikesPageComponent implements OnInit {
     this.getVotes();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   getVotes(): void {
     this._loadingService.setLoading(true);
     this._dogService
       .getVote()
       .pipe(
+        takeUntil(this.destroy$),
         finalize(() => {
           this._loadingService.setLoading(false);
         })
